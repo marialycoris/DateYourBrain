@@ -1,3 +1,4 @@
+import { LogoMark } from '@/components/Logo'
 import { type ReactNode } from 'react'
 
 export function AuthLayout({
@@ -15,9 +16,7 @@ export function AuthLayout({
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-amber-100 via-paper to-paper px-5 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-base font-semibold text-amber-300">
-            DB
-          </span>
+          <LogoMark size={48} className="mx-auto mb-4" />
           <h1 className="font-display text-3xl font-semibold text-ink">{title}</h1>
           <p className="mt-2 text-sm text-ink/60">{subtitle}</p>
         </div>

@@ -1,19 +1,33 @@
 import { useState, type FormEvent } from 'react'
-import { CheckCircle2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { CheckCircle2, KeyRound, LogOut } from 'lucide-react'
 import { AppShell } from '@/components/layout/AppShell'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import { Modal } from '@/components/ui/Modal'
 import { useAuth } from '@/context/AuthContext'
 import { auth } from '@/lib/api'
 
 export default function AccountPage() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  const [passwordOpen, setPasswordOpen] = useState(false)
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  const openPassword = () => {
+    setError('')
+    setSuccess(false)
+    setCurrent('')
+    setNext('')
+    setConfirm('')
+    setPasswordOpen(true)
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -38,6 +52,16 @@ export default function AccountPage() {
     }
   }
 
+  const handleLogout = async () => {
+    setLoggingOut(true)
+    try {
+      await logout()
+      navigate('/login')
+    } finally {
+      setLoggingOut(false)
+    }
+  }
+
   return (
     <AppShell>
       <h1 className="font-display text-2xl font-semibold text-ink">Your account</h1>
@@ -51,8 +75,34 @@ export default function AccountPage() {
       </div>
 
       <div className="mt-6 rounded-card border border-amber-200 bg-white/70 p-5">
-        <h2 className="font-display text-lg font-semibold text-ink">Change password</h2>
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <h2 className="font-display text-lg font-semibold text-ink">Security</h2>
+        <div className="mt-4 space-y-3">
+          <Button
+            variant="secondary"
+            fullWidth
+            onClick={openPassword}
+            className="flex items-center justify-center gap-2"
+          >
+            <KeyRound size={16} /> Change password
+          </Button>
+          <Button
+            variant="danger"
+            fullWidth
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="flex items-center justify-center gap-2"
+          >
+            <LogOut size={16} /> {loggingOut ? 'Signing out…' : 'Log out'}
+          </Button>
+        </div>
+      </div>
+
+      <Modal
+        open={passwordOpen}
+        onClose={() => setPasswordOpen(false)}
+        title="Change password"
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Current password"
             type="password"
@@ -81,11 +131,11 @@ export default function AccountPage() {
               <CheckCircle2 size={16} /> Password updated.
             </p>
           )}
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" fullWidth disabled={loading}>
             {loading ? 'Saving…' : 'Update password'}
           </Button>
         </form>
-      </div>
+      </Modal>
     </AppShell>
   )
 }

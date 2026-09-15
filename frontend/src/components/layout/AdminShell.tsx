@@ -2,6 +2,7 @@ import { type ReactNode } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { BarChart3, BookOpen, Flag, LogOut, MonitorSmartphone } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { LogoMark } from '../Logo'
 
 const links = [
   { to: '/admin', label: 'Analytics', icon: BarChart3, end: true },
@@ -17,9 +18,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-paper">
       <aside className="flex w-64 flex-col border-r border-amber-200/70 bg-amber-50/60 px-5 py-6">
         <div className="mb-8 flex items-center gap-2 px-1">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-amber-300">
-            DB
-          </span>
+          <LogoMark size={48} className="mx-auto mb-4" />
           <div className="leading-tight">
             <p className="font-display text-base font-semibold text-ink">Date Your Brain</p>
             <p className="text-xs text-ink/50">Admin panel</p>

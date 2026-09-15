@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Compass, LayoutGrid, LogOut, UserRound } from 'lucide-react'
+import { Compass, LayoutGrid, UserRound } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { LogoMark } from '@/components/Logo'
 
 const tabs = [
   { to: '/discover', label: 'Discover', icon: Compass },
@@ -10,16 +11,14 @@ const tabs = [
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-paper">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-amber-200/70 bg-paper/90 px-5 py-4 backdrop-blur">
         <button onClick={() => navigate('/discover')} className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-amber-300">
-            DB
-          </span>
+          <LogoMark size={32} className="rounded-full" />
           <span className="font-display text-lg font-semibold leading-none text-ink">
             Date Your Brain
           </span>
@@ -56,16 +55,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               )}
             </NavLink>
           ))}
-          <button
-            onClick={async () => {
-              await logout()
-              navigate('/login')
-            }}
-            className="flex flex-col items-center gap-1 rounded-xl px-4 py-1.5 text-xs font-medium text-ink/40 hover:text-signal"
-          >
-            <LogOut size={20} strokeWidth={1.8} />
-            Log out
-          </button>
         </div>
       </nav>
     </div>
