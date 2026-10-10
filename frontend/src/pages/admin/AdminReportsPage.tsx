@@ -36,7 +36,7 @@ export default function AdminReportsPage() {
       <h1 className="font-display text-2xl font-semibold text-ink">Reports</h1>
       <p className="mt-1 text-sm text-ink/55">Issues flagged by learners, newest first.</p>
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-wrap gap-2">
         {(['All', 'open', 'reviewed', 'resolved'] as const).map((s) => (
           <button
             key={s}

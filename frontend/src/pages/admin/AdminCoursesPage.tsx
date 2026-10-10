@@ -32,12 +32,12 @@ export default function AdminCoursesPage() {
 
   return (
     <AdminShell>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Courses</h1>
           <p className="mt-1 text-sm text-ink/55">{courses.length} in the catalog, vetted before publishing.</p>
         </div>
-        <Link to="/admin/courses/new">
+        <Link to="/admin/courses/new" className="self-start sm:self-auto">
           <Button>
             <span className="inline-flex items-center gap-1.5">
               <Plus size={16} /> Add course
@@ -46,7 +46,7 @@ export default function AdminCoursesPage() {
         </Link>
       </div>
 
-      <div className="relative mt-5 max-w-sm">
+      <div className="relative mt-5 w-full max-w-sm">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
         <input
           value={query}
@@ -56,8 +56,8 @@ export default function AdminCoursesPage() {
         />
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-card border border-amber-200 bg-white/70">
-        <table className="w-full text-left text-sm">
+      <div className="mt-5 overflow-x-auto rounded-card border border-amber-200 bg-white/70">
+        <table className="min-w-[640px] w-full text-left text-sm">
           <thead className="bg-amber-100/70 text-xs font-semibold text-ink/60">
             <tr>
               <th className="px-4 py-3">Title</th>

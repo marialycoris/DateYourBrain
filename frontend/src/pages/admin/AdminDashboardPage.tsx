@@ -38,8 +38,8 @@ export default function AdminDashboardPage() {
 
           <div className="mt-8">
             <h2 className="font-display text-lg font-semibold text-ink">Course-level metrics</h2>
-            <div className="mt-3 overflow-hidden rounded-card border border-amber-200 bg-white/70">
-              <table className="w-full text-left text-sm">
+            <div className="mt-3 overflow-x-auto rounded-card border border-amber-200 bg-white/70">
+              <table className="min-w-[640px] w-full text-left text-sm">
                 <thead className="bg-amber-100/70 text-xs font-semibold text-ink/60">
                   <tr>
                     <th className="px-4 py-3">Course</th>
