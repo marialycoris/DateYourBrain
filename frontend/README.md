@@ -26,36 +26,23 @@ npm run dev       # http://localhost:5173
 npm run build     # type-checks then produces a static build in dist/
 ```
 
-No backend is required to try the app. Every API call currently runs against an in-memory/
-localStorage mock (`src/lib/api.ts`) seeded with realistic course data (`src/data/mockData.ts`), so
-the whole flow — register, swipe, track, report, and the admin panel — works out of the box.
+The app expects the **Django backend** (in `../backend`) to be running on
+`http://127.0.0.1:8000`. `VITE_API_BASE_URL` in `.env` points there — change it
+if your backend runs elsewhere. Setup for the backend (XAMPP MySQL + stored
+procedures) is documented in `../backend/README.md`.
 
-**Demo accounts** (any password of 4+ characters works for these two):
+**Demo accounts** (password `password123`):
 - Learner: `grad@example.com`
 - Admin: `admin@dateyourbrain.app`
 
-## Connecting your Django backend
+## Backend wiring
 
-Everything the frontend needs from the backend is isolated in `src/lib/api.ts`. Each exported
-function (`auth.login`, `coursesApi.create`, `trackerApi.update`, `reportsApi.create`,
-`analyticsApi.summary`, etc.) has a comment above it naming the Django REST endpoint it expects,
-e.g.:
-
-```
-POST /api/auth/login/
-GET  /api/courses/
-POST /api/reports/
-GET  /api/analytics/summary/     (a good candidate for a single stored-procedure call)
-```
-
-To go live:
-1. Stand up the matching Django REST Framework views/serializers/URLs (using stored procedures via
-   `cursor.callproc(...)` wherever you want the heavy aggregation — e.g. the analytics summary or
-   completion-rate calculations — to live in the database rather than in Python).
-2. Replace the body of each function in `api.ts` with a real `http.get/post/patch(...)` call using
-   the already-configured `axios` instance (`http`), which already attaches the auth token header.
-3. Set `VITE_API_BASE_URL` in a `.env` file to your Django server's base URL.
-4. Nothing in `src/pages` or `src/components` needs to change — they only import from `api.ts`.
+Everything the frontend needs from the backend is isolated in
+`src/lib/api.ts` — each exported function maps 1:1 to a Django REST endpoint
+(`auth.login` → `POST /api/auth/login/`, `coursesApi.create` → `POST
+/api/courses/`, `analyticsApi.summary` → `GET /api/analytics/summary/`, etc.).
+The backend aggregates the analytics dashboard inside MySQL stored procedures
+and Django handles auth + CRUD.
 
 ## Feature map
 

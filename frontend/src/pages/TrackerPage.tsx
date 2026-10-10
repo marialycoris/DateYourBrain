@@ -18,9 +18,9 @@ export default function TrackerPage() {
 
   useEffect(() => {
     if (!user) return
-    Promise.all([trackerApi.listForUser(user.id), coursesApi.listAll()]).then(([tracker, allCourses]) => {
+    Promise.all([trackerApi.listForUser(user.id), coursesApi.listActive()]).then(([tracker, activeCourses]) => {
       setEntries(tracker)
-      setCourses(Object.fromEntries(allCourses.map((c) => [c.id, c])))
+      setCourses(Object.fromEntries(activeCourses.map((c) => [c.id, c])))
     })
   }, [user])
 

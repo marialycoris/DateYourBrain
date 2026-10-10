@@ -65,7 +65,8 @@ export default function LoginPage() {
         </Button>
         <div className="rounded-xl bg-amber-50 px-3 py-2.5 text-xs text-ink/55">
           Demo accounts — learner: <span className="font-medium">grad@example.com</span>, admin:{' '}
-          <span className="font-medium">admin@dateyourbrain.app</span>. Any password of 4+ characters works.
+          <span className="font-medium">admin@dateyourbrain.app</span>. Use password{' '}
+          <span className="font-medium">password123</span>.
         </div>
       </form>
     </AuthLayout>
