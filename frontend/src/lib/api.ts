@@ -34,6 +34,23 @@ http.interceptors.request.use((config) => {
   return config
 })
 
+// A 401 means the stored token is stale or no longer valid on the server
+// (e.g. the database was rebuilt). Self-heal: clear the dead session and
+// bounce to the login page so the user isn't stranded in a half-authed state.
+http.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (axios.isAxiosError(err) && err.response?.status === 401) {
+      localStorage.removeItem('dyb_token')
+      localStorage.removeItem('dyb_session')
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.assign('/login')
+      }
+    }
+    return Promise.reject(err)
+  },
+)
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
