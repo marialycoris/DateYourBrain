@@ -18,7 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-paper">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-amber-200/70 bg-paper/90 px-5 py-4 backdrop-blur">
         <button onClick={() => navigate('/discover')} className="flex items-center gap-2">
-          <LogoMark size={32} className="rounded-full" />
+          <LogoMark size={32} />
           <span className="font-display text-lg font-semibold leading-none text-ink">
             Date Your Brain
           </span>
