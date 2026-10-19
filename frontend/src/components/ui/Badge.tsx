@@ -1,5 +1,5 @@
 import { ShieldCheck, BadgeCheck, GraduationCap, Sparkles } from 'lucide-react'
-import type { TrustBadge } from '@/types'
+import type { TrustBadge, TrackerStatus } from '@/types'
 
 const badgeStyle: Record<TrustBadge, { icon: React.ReactNode; classes: string }> = {
   Accredited: { icon: <ShieldCheck size={13} />, classes: 'bg-amber-800 text-amber-50' },
@@ -18,10 +18,10 @@ export function TrustBadgePill({ badge }: { badge: TrustBadge }) {
   )
 }
 
-export function StatusPill({ status }: { status: 'Interested' | 'In Progress' | 'Completed' }) {
-  const map = {
+export function StatusPill({ status }: { status: TrackerStatus }) {
+  const map: Record<TrackerStatus, string> = {
     Interested: 'bg-amber-100 text-amber-800',
-    'In Progress': 'bg-amber-400 text-ink',
+    Ongoing: 'bg-amber-400 text-ink',
     Completed: 'bg-ink text-amber-50',
   }
   return <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${map[status]}`}>{status}</span>

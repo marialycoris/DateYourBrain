@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
+import { ToastProvider } from '@/components/ui/Toast'
 import { ProtectedRoute, AdminRoute } from '@/components/layout/ProtectedRoute'
 
 import LoginPage from '@/pages/auth/LoginPage'
@@ -18,30 +19,32 @@ import NotFoundPage from '@/pages/NotFoundPage'
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Navigate to="/discover" replace />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+    <ToastProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to="/discover" replace />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/discover" element={<ProtectedRoute><DiscoverPage /></ProtectedRoute>} />
-          <Route path="/tracker" element={<ProtectedRoute><TrackerPage /></ProtectedRoute>} />
-          <Route path="/courses/:id" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
-          <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
+            <Route path="/discover" element={<ProtectedRoute><DiscoverPage /></ProtectedRoute>} />
+            <Route path="/tracker" element={<ProtectedRoute><TrackerPage /></ProtectedRoute>} />
+            <Route path="/courses/:id" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
 
-          <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
-          <Route path="/admin/courses" element={<AdminRoute><AdminCoursesPage /></AdminRoute>} />
-          <Route path="/admin/courses/new" element={<AdminRoute><AdminCourseFormPage /></AdminRoute>} />
-          <Route path="/admin/courses/:id" element={<AdminRoute><AdminCourseFormPage /></AdminRoute>} />
-          <Route path="/admin/paths" element={<AdminRoute><AdminPathsPage /></AdminRoute>} />
-          <Route path="/admin/paths/new" element={<AdminRoute><AdminPathFormPage /></AdminRoute>} />
-          <Route path="/admin/paths/:id" element={<AdminRoute><AdminPathFormPage /></AdminRoute>} />
-          <Route path="/admin/reports" element={<AdminRoute><AdminReportsPage /></AdminRoute>} />
+            <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
+            <Route path="/admin/courses" element={<AdminRoute><AdminCoursesPage /></AdminRoute>} />
+            <Route path="/admin/courses/new" element={<AdminRoute><AdminCourseFormPage /></AdminRoute>} />
+            <Route path="/admin/courses/:id" element={<AdminRoute><AdminCourseFormPage /></AdminRoute>} />
+            <Route path="/admin/paths" element={<AdminRoute><AdminPathsPage /></AdminRoute>} />
+            <Route path="/admin/paths/new" element={<AdminRoute><AdminPathFormPage /></AdminRoute>} />
+            <Route path="/admin/paths/:id" element={<AdminRoute><AdminPathFormPage /></AdminRoute>} />
+            <Route path="/admin/reports" element={<AdminRoute><AdminReportsPage /></AdminRoute>} />
 
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </ToastProvider>
   )
 }

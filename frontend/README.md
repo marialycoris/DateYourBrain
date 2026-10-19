@@ -50,7 +50,7 @@ and Django handles auth + CRUD.
 |----------------------------------------|-----------------------------------------------------------|
 | Register / login / logout / change password, role-based access | `src/pages/auth/`, `src/pages/AccountPage.tsx`, `src/context/AuthContext.tsx` |
 | Swipe-based discovery                  | `src/pages/DiscoverPage.tsx`, `src/components/SwipeDeck.tsx`, `SwipeCard.tsx` |
-| Course tracker (Interested/In Progress/Completed, notes, filters) | `src/pages/TrackerPage.tsx` |
+| Course tracker (Interested/Ongoing/Completed, notes, filters) | `src/pages/TrackerPage.tsx` |
 | Report an issue                        | `src/pages/CourseDetailPage.tsx` (modal form)              |
 | Admin course management (CRUD, soft delete, checklist) | `src/pages/admin/AdminCoursesPage.tsx`, `AdminCourseFormPage.tsx` |
 | Admin issue queue                      | `src/pages/admin/AdminReportsPage.tsx`                     |

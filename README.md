@@ -96,13 +96,13 @@ Your **Tracker** is where all your saved courses live. Think of it as your perso
 study shortlist. 📚
 
 **Filtering:**
-- Tap the status chips: **All · Interested · In Progress · Completed**
+- Tap the status chips: **All · Interested · Ongoing · Completed**
 - Or filter by **provider** (Google, HubSpot, etc.)
 
 **Moving a course along:**
 1. Find the course in your Tracker.
 2. Tap the status button to move it:
-   **Interested → In Progress → Completed** ✅
+   **Interested → Ongoing → Completed** ✅
 3. Add **notes** — e.g. *"Week 2 done"* or *"Finish by Friday"* — by tapping the
    notes area, typing, and hitting **Save**.
 
@@ -158,7 +158,7 @@ The **Dashboard** gives you a live snapshot of how the app is doing:
 - 👆 **Total swipes** — how many decisions learners have made
 - 📊 **Average swipes per learner** — engagement at a glance
 - **Course performance table** — for each course: how many learners marked it
-  *Interested*, *In Progress*, or *Completed*, plus its **completion rate**
+  *Interested*, *Ongoing*, or *Completed*, plus its **completion rate**
 - **Issue reports by course** — a breakdown of what learners are reporting
 
 Everything updates automatically — no refreshing needed after actions elsewhere.
@@ -240,7 +240,7 @@ When in doubt, swipe right on anything that looks interesting!
 
 **What do the statuses in my Tracker mean?**
 - **Interested** — you saved it and might take it
-- **In Progress** — you've started it
+- **Ongoing** — you've started it
 - **Completed** — you're done 🎉
 
 **I found a broken link or a course that's no longer free. What should I do?**

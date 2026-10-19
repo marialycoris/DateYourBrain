@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
                   <tr>
                     <th className="px-4 py-3">Course</th>
                     <th className="px-4 py-3">Interested</th>
-                    <th className="px-4 py-3">In progress</th>
+                    <th className="px-4 py-3">Ongoing</th>
                     <th className="px-4 py-3">Completed</th>
                     <th className="px-4 py-3">Completion rate</th>
                   </tr>

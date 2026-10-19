@@ -57,9 +57,9 @@
 
 ### 2.4 Tracker — `/tracker`
 1. `GET /api/tracker/` returns the learner's own entries (scoped to session user).
-2. Filter by status chips (All / Interested / In Progress / Completed) or by issuer.
+2. Filter by status chips (All / Interested / Ongoing / Completed) or by issuer.
 3. Per entry:
-   - **Change status:** Mark *Interested* → *In Progress* → *Completed* → `PATCH /api/tracker/:id/`.
+   - **Change status:** Mark *Interested* → *Ongoing* → *Completed* → `PATCH /api/tracker/:id/`.
    - **Notes:** add/edit inline notes → same `PATCH`.
 4. Entries link back to the course detail page.
 
@@ -82,7 +82,7 @@
 | Stored procedure | Feeds |
 |---|---|
 | `sp_dashboard_totals` | Stat cards: registered users, active users (30d), total swipes, avg swipes/user |
-| `sp_course_metrics` | Per-course table: Interested / In Progress / Completed counts + completion rate |
+| `sp_course_metrics` | Per-course table: Interested / Ongoing / Completed counts + completion rate |
 | `sp_report_counts` | Issue reports grouped by course, broken out by type |
 
 ### 3.2 Course Management — `/admin/courses`
@@ -114,7 +114,7 @@
 - [x] Swipe deck with drag gestures (right = save, left = pass)
 - [x] Swipe logging via MySQL stored procedure (`sp_log_swipe`, atomic write path)
 - [x] Course detail page (badges, skills, duration, verification notes, external link)
-- [x] Personal tracker with status pipeline (Interested → In Progress → Completed)
+- [x] Personal tracker with status pipeline (Interested → Ongoing → Completed)
 - [x] Per-entry notes
 - [x] Tracker filters (status chips + issuer dropdown)
 - [x] Issue reporting (4 issue types + comment)
@@ -224,7 +224,7 @@ App is now at `http://localhost:5173` (expects the backend on `127.0.0.1:8000`).
 | Admin | `admin@dateyourbrain.app` | `password123` |
 | Learner | `grad@example.com` | `password123` |
 
-Seed data: **7 courses**, **4 tracker entries** for the learner (2 In Progress, 2 Completed), **8 swipes**, and **3 reports** (1 open, 1 reviewed, 1 resolved) so the dashboard shows real numbers.
+Seed data: **7 courses**, **4 tracker entries** for the learner (2 Ongoing, 2 Completed), **8 swipes**, and **3 reports** (1 open, 1 reviewed, 1 resolved) so the dashboard shows real numbers.
 
 ### 6.4 Demo script — Learner path (~3 min)
 1. Go to `http://localhost:5173` → redirected to `/login`.
@@ -232,7 +232,7 @@ Seed data: **7 courses**, **4 tracker entries** for the learner (2 In Progress, 
 3. **Discover:** swipe cards right and left — show the drag gesture and the ♥/✕ buttons. Point out that a right swipe immediately appears in the tracker.
 4. Tap **"i"** on a card → **Course Detail** — show badges, skills, verification notes, external link.
 5. Click **Report a problem** → pick *Link broken*, add a comment, submit → "goes straight to our admin queue".
-6. Open the **Tracker** tab → change a status to *In Progress* / *Completed*, add a note, and try the status/issuer filters.
+6. Open the **Tracker** tab → change a status to *Ongoing* / *Completed*, add a note, and try the status/issuer filters.
 7. Open **Account** → show the change-password modal (optional) and log out.
 
 ### 6.5 Demo script — Admin path (~3 min)

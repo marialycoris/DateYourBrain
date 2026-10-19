@@ -2,23 +2,36 @@ import { useEffect, useState } from 'react'
 import { AppShell } from '@/components/layout/AppShell'
 import { LearningPathBanner } from '@/components/LearningPathBanner'
 import { SwipeDeck } from '@/components/SwipeDeck'
+import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 import { coursesApi, trackerApi } from '@/lib/api'
 import type { Course } from '@/types'
 
 export default function DiscoverPage() {
   const { user } = useAuth()
+  const toast = useToast()
   const [courses, setCourses] = useState<Course[] | null>(null)
   const [savedCount, setSavedCount] = useState(0)
 
   useEffect(() => {
-    coursesApi.listActive().then(setCourses)
-  }, [])
+    if (!user) return
+    // Courses already in the learner's tracker (saved or completed) are done
+    // with discovery — fetch them first, then load the deck without them.
+    trackerApi
+      .listForUser(user.id)
+      .then((entries) => coursesApi.listActive(entries.map((e) => String(e.courseId))))
+      .then(setCourses)
+      .catch(() => setCourses([]))
+  }, [user])
 
   const handleSwipe = async (course: Course, direction: 'left' | 'right') => {
     if (!user) return
-    if (direction === 'right') setSavedCount((c) => c + 1)
-    await trackerApi.logSwipe(course.id, user.id, direction)
+    try {
+      await trackerApi.logSwipe(course.id, user.id, direction)
+      if (direction === 'right') setSavedCount((c) => c + 1)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't save that swipe — please try again.")
+    }
   }
 
   return (

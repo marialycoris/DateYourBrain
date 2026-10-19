@@ -19,7 +19,7 @@ class SwipeLog(models.Model):
 class TrackerEntry(models.Model):
     class Status(models.TextChoices):
         INTERESTED = 'Interested', 'Interested'
-        IN_PROGRESS = 'In Progress', 'In Progress'
+        ONGOING = 'Ongoing', 'Ongoing'
         COMPLETED = 'Completed', 'Completed'
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tracker_entries')

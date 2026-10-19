@@ -10,7 +10,7 @@ import type { LearningPath, TrackerEntry } from '@/types'
 const MAX_VISIBLE = 3
 
 function statusFor(entries: TrackerEntry[], courseId: string) {
-  return entries.find((e) => e.courseId === courseId)?.status ?? null
+  return entries.find((e) => String(e.courseId) === String(courseId))?.status ?? null
 }
 
 function PathCard({ path, entries }: { path: LearningPath; entries: TrackerEntry[] }) {

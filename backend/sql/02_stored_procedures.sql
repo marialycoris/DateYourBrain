@@ -90,7 +90,7 @@ BEGIN
     c.id            AS course_id,
     c.title         AS title,
     COUNT(e.id)     AS interested,
-    IFNULL(SUM(CASE WHEN e.status = 'In Progress' THEN 1 ELSE 0 END), 0) AS in_progress,
+    IFNULL(SUM(CASE WHEN e.status = 'Ongoing' THEN 1 ELSE 0 END), 0) AS in_progress,
     IFNULL(SUM(CASE WHEN e.status = 'Completed' THEN 1 ELSE 0 END), 0)   AS completed,
     CASE
       WHEN COUNT(e.id) = 0 THEN 0

@@ -25,7 +25,7 @@ export interface Course {
   updatedAt: string
 }
 
-export type TrackerStatus = 'Interested' | 'In Progress' | 'Completed'
+export type TrackerStatus = 'Interested' | 'Ongoing' | 'Completed'
 
 export interface TrackerEntry {
   id: string

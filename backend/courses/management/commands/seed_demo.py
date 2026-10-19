@@ -193,10 +193,10 @@ class Command(BaseCommand):
         self.stdout.write(f'Learning paths: {created_paths} created.')
 
         tracker_state = {
-            'Google IT Support Professional Certificate': TrackerEntry.Status.IN_PROGRESS,
+            'Google IT Support Professional Certificate': TrackerEntry.Status.ONGOING,
             'HubSpot Content Marketing Certification': TrackerEntry.Status.COMPLETED,
             'IBM Data Fundamentals Badge': TrackerEntry.Status.COMPLETED,
-            'freeCodeCamp Responsive Web Design': TrackerEntry.Status.IN_PROGRESS,
+            'freeCodeCamp Responsive Web Design': TrackerEntry.Status.ONGOING,
         }
         notes = {
             'Google IT Support Professional Certificate': 'On module 3 — networking. Aiming to finish before September.',
