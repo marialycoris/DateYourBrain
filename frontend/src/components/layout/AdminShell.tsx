@@ -1,12 +1,13 @@
 import { type ReactNode, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { BarChart3, BookOpen, Flag, LogOut, Menu, MonitorSmartphone, X } from 'lucide-react'
+import { BarChart3, BookOpen, Flag, LogOut, Menu, MonitorSmartphone, Route, X } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { LogoMark } from '../Logo'
 
 const links = [
   { to: '/admin', label: 'Analytics', icon: BarChart3, end: true },
   { to: '/admin/courses', label: 'Courses', icon: BookOpen },
+  { to: '/admin/paths', label: 'Learning Paths', icon: Route },
   { to: '/admin/reports', label: 'Reports', icon: Flag },
 ]
 

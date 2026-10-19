@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'tracker',
     'reports',
     'analytics',
+    'paths',
 ]
 
 MIDDLEWARE = [

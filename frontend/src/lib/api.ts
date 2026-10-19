@@ -15,6 +15,7 @@ import type {
   AnalyticsSummary,
   Course,
   IssueType,
+  LearningPath,
   Report,
   TrackerEntry,
   TrackerStatus,
@@ -212,6 +213,55 @@ export const reportsApi = {
   async updateStatus(id: string, status: Report['status']): Promise<Report> {
     const res = await http.patch<Report>(`/reports/admin/${id}/`, { status })
     return res.data
+  },
+}
+
+// ---------------------------------------------------------------------------
+// Learning paths
+// GET /api/paths/               GET /api/paths/:id/       GET /api/paths/all/
+// POST /api/paths/ (admin)      PATCH /api/paths/:id/ (admin)
+// DELETE /api/paths/:id/ (admin, soft)
+// ---------------------------------------------------------------------------
+export interface LearningPathInput {
+  title: string
+  description: string
+  status: 'active' | 'inactive'
+  courseIds: string[]
+}
+
+export const pathsApi = {
+  async listActive(): Promise<LearningPath[]> {
+    const res = await http.get<LearningPath[]>('/paths/')
+    return res.data
+  },
+
+  async listAll(): Promise<LearningPath[]> {
+    const res = await http.get<LearningPath[]>('/paths/all/')
+    return res.data
+  },
+
+  async get(id: string): Promise<LearningPath | null> {
+    try {
+      const res = await http.get<LearningPath>(`/paths/${id}/`)
+      return res.data
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 404) return null
+      throw readErrorMessage(err)
+    }
+  },
+
+  async create(input: LearningPathInput): Promise<LearningPath> {
+    const res = await http.post<LearningPath>('/paths/', input)
+    return res.data
+  },
+
+  async update(id: string, patch: Partial<LearningPathInput>): Promise<LearningPath> {
+    const res = await http.patch<LearningPath>(`/paths/${id}/`, patch)
+    return res.data
+  },
+
+  async remove(id: string): Promise<void> {
+    await http.delete(`/paths/${id}/`)
   },
 }
 

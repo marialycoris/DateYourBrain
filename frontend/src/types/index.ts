@@ -54,6 +54,16 @@ export interface Report {
   createdAt: string
 }
 
+export interface LearningPath {
+  id: string
+  title: string
+  description: string
+  status: 'active' | 'inactive'
+  courses: Course[] // ordered — the sequence learners should follow
+  createdAt: string
+  updatedAt: string
+}
+
 export interface AnalyticsSummary {
   totalUsers: number
   activeUsers30d: number

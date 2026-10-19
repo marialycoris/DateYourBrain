@@ -11,6 +11,8 @@ import AccountPage from '@/pages/AccountPage'
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage'
 import AdminCoursesPage from '@/pages/admin/AdminCoursesPage'
 import AdminCourseFormPage from '@/pages/admin/AdminCourseFormPage'
+import AdminPathsPage from '@/pages/admin/AdminPathsPage'
+import AdminPathFormPage from '@/pages/admin/AdminPathFormPage'
 import AdminReportsPage from '@/pages/admin/AdminReportsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
@@ -32,6 +34,9 @@ export default function App() {
           <Route path="/admin/courses" element={<AdminRoute><AdminCoursesPage /></AdminRoute>} />
           <Route path="/admin/courses/new" element={<AdminRoute><AdminCourseFormPage /></AdminRoute>} />
           <Route path="/admin/courses/:id" element={<AdminRoute><AdminCourseFormPage /></AdminRoute>} />
+          <Route path="/admin/paths" element={<AdminRoute><AdminPathsPage /></AdminRoute>} />
+          <Route path="/admin/paths/new" element={<AdminRoute><AdminPathFormPage /></AdminRoute>} />
+          <Route path="/admin/paths/:id" element={<AdminRoute><AdminPathFormPage /></AdminRoute>} />
           <Route path="/admin/reports" element={<AdminRoute><AdminReportsPage /></AdminRoute>} />
 
           <Route path="*" element={<NotFoundPage />} />

@@ -11,6 +11,7 @@ from django.utils import timezone
 
 from accounts.models import Role, User
 from courses.models import Course
+from paths.models import LearningPath
 from reports.models import Report
 from tracker.models import SwipeLog, TrackerEntry
 
@@ -126,6 +127,25 @@ COURSES = [
 ]
 
 
+LEARNING_PATHS = [
+    {
+        'title': 'Launch Your Tech Career',
+        'description': (
+            'A guided sequence from absolute beginner to job-ready. Take the courses '
+            'in order — each one builds on the last, ending in a certificate employers '
+            'can verify.'
+        ),
+        'course_titles': [
+            'Google IT Support Professional Certificate',
+            'freeCodeCamp Responsive Web Design',
+            'IBM Data Fundamentals Badge',
+            'Google Data Analytics Certificate',
+            'Meta Social Media Marketing Certificate',
+        ],
+    },
+]
+
+
 class Command(BaseCommand):
     help = 'Seed demo data (users, courses, tracker activity, reports).'
 
@@ -157,6 +177,20 @@ class Command(BaseCommand):
         self.stdout.write(f'Courses: {created} created, {len(COURSES) - created} already present.')
 
         courses = list(Course.objects.all())
+
+        created_paths = 0
+        for data in LEARNING_PATHS:
+            path, was_created = LearningPath.objects.get_or_create(
+                title=data['title'],
+                defaults={'description': data['description'], 'status': LearningPath.Status.ACTIVE},
+            )
+            created_paths += int(was_created)
+            if not path.path_courses.exists():
+                for index, title in enumerate(data['course_titles']):
+                    course = next((c for c in courses if c.title == title), None)
+                    if course:
+                        path.path_courses.create(course=course, order=index)
+        self.stdout.write(f'Learning paths: {created_paths} created.')
 
         tracker_state = {
             'Google IT Support Professional Certificate': TrackerEntry.Status.IN_PROGRESS,
