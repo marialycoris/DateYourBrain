@@ -1,5 +1,5 @@
-User dashboard
-- in tracker, show the list on the left side then the info of the clicked course on the right (desktop), stay as is for mobile
+UI
+- select dropdown arrow looks ugly
 
 Learning Path
 - if clicked, should've shown the list of courses for the path and their statuses
