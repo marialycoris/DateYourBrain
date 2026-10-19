@@ -39,7 +39,7 @@ export function ConfirmModal({
         </div>
       )}
 
-      <div className="mt-5 flex gap-2">
+      <div className="mt-5 flex justify-end gap-2">
         <Button onClick={onConfirm} disabled={busy} variant={variant}>
           {busy ? 'Saving…' : confirmLabel}
         </Button>

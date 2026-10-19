@@ -18,6 +18,13 @@ interface PendingChange {
   next: TrackerStatus
 }
 
+interface PendingNote {
+  entry: TrackerEntry
+  course: Course
+  notes: string
+  resolve: (saved: boolean) => void
+}
+
 export default function TrackerPage() {
   const { user } = useAuth()
   const toast = useToast()
@@ -26,6 +33,7 @@ export default function TrackerPage() {
   const [statusFilter, setStatusFilter] = useState<TrackerStatus | 'All'>('All')
   const [issuerFilter, setIssuerFilter] = useState('All')
   const [pending, setPending] = useState<PendingChange | null>(null)
+  const [pendingNote, setPendingNote] = useState<PendingNote | null>(null)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -47,13 +55,24 @@ export default function TrackerPage() {
     return true
   })
 
-  const saveNotes = async (id: string, notes: string) => {
+  const requestSaveNotes = (entry: TrackerEntry, course: Course, notes: string) =>
+    new Promise<boolean>((resolve) => setPendingNote({ entry, course, notes, resolve }))
+
+  const confirmNoteSave = async () => {
+    if (!pendingNote) return
+    setSaving(true)
     try {
-      const updated = await trackerApi.update(id, { notes })
+      const updated = await trackerApi.update(pendingNote.entry.id, { notes: pendingNote.notes })
       setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))
       toast.success('Note saved.')
+      pendingNote.resolve(true)
+      setPendingNote(null)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't save the note — please try again.")
+      pendingNote.resolve(false)
+      setPendingNote(null)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -119,7 +138,7 @@ export default function TrackerPage() {
               entry={entry}
               course={course}
               onStatusChange={(e, c, next) => setPending({ entry: e, course: c, next })}
-              onSaveNotes={saveNotes}
+              onSaveNotes={requestSaveNotes}
             />
           )
         })}
@@ -149,6 +168,21 @@ export default function TrackerPage() {
         }
         busy={saving}
       />
+
+      <ConfirmModal
+        open={!!pendingNote}
+        onClose={() => {
+          if (!saving) {
+            pendingNote?.resolve(false)
+            setPendingNote(null)
+          }
+        }}
+        onConfirm={confirmNoteSave}
+        title="Save note?"
+        message={pendingNote ? `Your note on "${pendingNote.course.title}" will be saved.` : ''}
+        confirmLabel="Save note"
+        busy={saving}
+      />
     </AppShell>
   )
 }
@@ -162,7 +196,7 @@ function TrackerCard({
   entry: TrackerEntry
   course: Course
   onStatusChange: (entry: TrackerEntry, course: Course, next: TrackerStatus) => void
-  onSaveNotes: (id: string, notes: string) => void
+  onSaveNotes: (entry: TrackerEntry, course: Course, notes: string) => Promise<boolean>
 }) {
   const [notes, setNotes] = useState(entry.notes)
   const [editingNotes, setEditingNotes] = useState(false)
@@ -212,9 +246,8 @@ function TrackerCard({
           />
           <div className="flex gap-2">
             <button
-              onClick={() => {
-                onSaveNotes(entry.id, notes)
-                setEditingNotes(false)
+              onClick={async () => {
+                if (await onSaveNotes(entry, course, notes)) setEditingNotes(false)
               }}
               className="rounded-full bg-ink px-3 py-1.5 text-xs font-medium text-amber-50"
             >

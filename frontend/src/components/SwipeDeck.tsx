@@ -28,7 +28,7 @@ export function SwipeDeck({
 
   if (!current) {
     return (
-      <div className="flex h-[26rem] flex-col items-center justify-center rounded-card border border-dashed border-amber-300 bg-amber-50/60 px-8 text-center">
+      <div className="flex h-[26rem] flex-col items-center justify-center rounded-card border border-dashed border-amber-300 bg-amber-50/60 px-8 text-center lg:h-[32rem]">
         <p className="font-display text-xl font-semibold text-ink">You're through today's stack</p>
         <p className="mt-2 text-sm text-ink/60">
           Check your tracker, or come back later — the admin team adds newly vetted courses regularly.
@@ -39,7 +39,7 @@ export function SwipeDeck({
 
   return (
     <div>
-      <div className="relative h-[26rem] w-full">
+      <div className="relative h-[26rem] w-full lg:h-[32rem]">
         {visible
           .map((course, i) => (
             <SwipeCard

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AdminShell } from '@/components/layout/AdminShell'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { useToast } from '@/components/ui/Toast'
 import { reportsApi, coursesApi } from '@/lib/api'
 import type { Course, IssueStatus, Report } from '@/types'
 
@@ -10,9 +12,12 @@ const STATUS_STYLES: Record<IssueStatus, string> = {
 }
 
 export default function AdminReportsPage() {
+  const toast = useToast()
   const [reports, setReports] = useState<Report[]>([])
   const [courses, setCourses] = useState<Record<string, Course>>({})
   const [filter, setFilter] = useState<IssueStatus | 'All'>('All')
+  const [pending, setPending] = useState<{ id: string; status: IssueStatus; title: string } | null>(null)
+  const [saving, setSaving] = useState(false)
 
   const refresh = () =>
     Promise.all([reportsApi.listAll(), coursesApi.listAll()]).then(([r, c]) => {
@@ -26,9 +31,19 @@ export default function AdminReportsPage() {
 
   const filtered = reports.filter((r) => filter === 'All' || r.status === filter)
 
-  const setStatus = async (id: string, status: IssueStatus) => {
-    await reportsApi.updateStatus(id, status)
-    refresh()
+  const confirmSetStatus = async () => {
+    if (!pending) return
+    setSaving(true)
+    try {
+      await reportsApi.updateStatus(pending.id, pending.status)
+      toast.success(`Marked "${pending.title}" as ${pending.status}.`)
+      setPending(null)
+      refresh()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't update the report status — please try again.")
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -72,11 +87,11 @@ export default function AdminReportsPage() {
                 {(['open', 'reviewed', 'resolved'] as IssueStatus[])
                   .filter((s) => s !== r.status)
                   .map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setStatus(r.id, s)}
-                      className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium capitalize text-amber-800 hover:bg-amber-100"
-                    >
+                     <button
+                       key={s}
+                       onClick={() => setPending({ id: r.id, status: s, title: course?.title ?? 'Unknown course' })}
+                       className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium capitalize text-amber-800 hover:bg-amber-100"
+                     >
                       Mark {s}
                     </button>
                   ))}
@@ -85,6 +100,17 @@ export default function AdminReportsPage() {
           )
         })}
       </div>
+      <ConfirmModal
+        open={!!pending}
+        onClose={() => {
+          if (!saving) setPending(null)
+        }}
+        onConfirm={confirmSetStatus}
+        title="Update report status?"
+        message={pending ? `Mark "${pending.title}" as ${pending.status}.` : ''}
+        confirmLabel={pending ? `Mark ${pending.status}` : 'Confirm'}
+        busy={saving}
+      />
     </AdminShell>
   )
 }

@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/auth/RegisterPage'
 import DiscoverPage from '@/pages/DiscoverPage'
 import TrackerPage from '@/pages/TrackerPage'
 import CourseDetailPage from '@/pages/CourseDetailPage'
+import LearningPathDetailPage from '@/pages/LearningPathDetailPage'
 import AccountPage from '@/pages/AccountPage'
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage'
 import AdminCoursesPage from '@/pages/admin/AdminCoursesPage'
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/discover" element={<ProtectedRoute><DiscoverPage /></ProtectedRoute>} />
             <Route path="/tracker" element={<ProtectedRoute><TrackerPage /></ProtectedRoute>} />
             <Route path="/courses/:id" element={<ProtectedRoute><CourseDetailPage /></ProtectedRoute>} />
+            <Route path="/paths/:id" element={<ProtectedRoute><LearningPathDetailPage /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
 
             <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />

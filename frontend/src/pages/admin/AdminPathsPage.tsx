@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Trash2, Pencil } from 'lucide-react'
 import { AdminShell } from '@/components/layout/AdminShell'
-import { Modal } from '@/components/ui/Modal'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { Button } from '@/components/ui/Button'
+import { useToast } from '@/components/ui/Toast'
 import { pathsApi } from '@/lib/api'
 import type { LearningPath } from '@/types'
 
 export default function AdminPathsPage() {
+  const toast = useToast()
   const [paths, setPaths] = useState<LearningPath[]>([])
   const [pendingDelete, setPendingDelete] = useState<LearningPath | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   const refresh = () => pathsApi.listAll().then(setPaths)
   useEffect(() => {
@@ -18,9 +21,17 @@ export default function AdminPathsPage() {
 
   const confirmDelete = async () => {
     if (!pendingDelete) return
-    await pathsApi.remove(pendingDelete.id)
-    setPendingDelete(null)
-    refresh()
+    setDeleting(true)
+    try {
+      await pathsApi.remove(pendingDelete.id)
+      toast.success(`"${pendingDelete.title}" deactivated.`)
+      setPendingDelete(null)
+      refresh()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't deactivate the path — please try again.")
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const totalHours = (path: LearningPath) =>
@@ -110,20 +121,18 @@ export default function AdminPathsPage() {
         </div>
       )}
 
-      <Modal open={!!pendingDelete} onClose={() => setPendingDelete(null)} title="Deactivate learning path">
-        <p className="text-sm text-ink/70">
-          "{pendingDelete?.title}" will be hidden from learners immediately. This is a soft delete — the
-          record stays in the database.
-        </p>
-        <div className="mt-5 flex gap-2">
-          <Button variant="danger" onClick={confirmDelete}>
-            Deactivate
-          </Button>
-          <Button variant="ghost" onClick={() => setPendingDelete(null)}>
-            Cancel
-          </Button>
-        </div>
-      </Modal>
+      <ConfirmModal
+        open={!!pendingDelete}
+        onClose={() => {
+          if (!deleting) setPendingDelete(null)
+        }}
+        onConfirm={confirmDelete}
+        title="Deactivate learning path"
+        message={`"${pendingDelete?.title}" will be hidden from learners immediately. This is a soft delete — the record stays in the database.`}
+        confirmLabel="Deactivate"
+        variant="danger"
+        busy={deleting}
+      />
     </AdminShell>
   )
 }

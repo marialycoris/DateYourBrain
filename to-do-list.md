@@ -1,9 +1,8 @@
 User dashboard
-- too mobile-focused, needs a proper look for desktop screen size (occupy space)
-
-ConfirmModal
-- buttons should align to right not left
-- apply this component to almost everywhere, from saving notes to changing password, logout
+- in tracker, show the list on the left side then the info of the clicked course on the right (desktop), stay as is for mobile
 
 Learning Path
 - if clicked, should've shown the list of courses for the path and their statuses
+
+System
+- changing password keeps blinking as if loading, check why

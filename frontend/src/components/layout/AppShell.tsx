@@ -14,7 +14,7 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const shellWidth = wide ? 'max-w-md lg:max-w-6xl' : 'max-w-md'
+  const shellWidth = wide ? 'max-w-md lg:max-w-7xl' : 'max-w-md'
   const shellPad = wide ? 'px-5 lg:px-8' : 'px-5'
 
   return (

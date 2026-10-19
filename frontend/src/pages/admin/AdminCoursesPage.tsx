@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Trash2, Pencil } from 'lucide-react'
 import { AdminShell } from '@/components/layout/AdminShell'
-import { Modal } from '@/components/ui/Modal'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { Button } from '@/components/ui/Button'
+import { useToast } from '@/components/ui/Toast'
 import { coursesApi } from '@/lib/api'
 import type { Course } from '@/types'
 
 export default function AdminCoursesPage() {
+  const toast = useToast()
   const [courses, setCourses] = useState<Course[]>([])
   const [query, setQuery] = useState('')
   const [pendingDelete, setPendingDelete] = useState<Course | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   const refresh = () => coursesApi.listAll().then(setCourses)
   useEffect(() => {
@@ -25,9 +28,17 @@ export default function AdminCoursesPage() {
 
   const confirmDelete = async () => {
     if (!pendingDelete) return
-    await coursesApi.softDelete(pendingDelete.id)
-    setPendingDelete(null)
-    refresh()
+    setDeleting(true)
+    try {
+      await coursesApi.softDelete(pendingDelete.id)
+      toast.success(`"${pendingDelete.title}" deactivated.`)
+      setPendingDelete(null)
+      refresh()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't deactivate the course — please try again.")
+    } finally {
+      setDeleting(false)
+    }
   }
 
   return (
@@ -106,20 +117,18 @@ export default function AdminCoursesPage() {
         </table>
       </div>
 
-      <Modal open={!!pendingDelete} onClose={() => setPendingDelete(null)} title="Deactivate course">
-        <p className="text-sm text-ink/70">
-          "{pendingDelete?.title}" will be hidden from the swipe deck immediately. This is a soft delete —
-          the record stays in the database and can be reactivated later.
-        </p>
-        <div className="mt-5 flex gap-2">
-          <Button variant="danger" onClick={confirmDelete}>
-            Deactivate
-          </Button>
-          <Button variant="ghost" onClick={() => setPendingDelete(null)}>
-            Cancel
-          </Button>
-        </div>
-      </Modal>
+      <ConfirmModal
+        open={!!pendingDelete}
+        onClose={() => {
+          if (!deleting) setPendingDelete(null)
+        }}
+        onConfirm={confirmDelete}
+        title="Deactivate course"
+        message={`"${pendingDelete?.title}" will be hidden from the swipe deck immediately. This is a soft delete — the record stays in the database and can be reactivated later.`}
+        confirmLabel="Deactivate"
+        variant="danger"
+        busy={deleting}
+      />
     </AdminShell>
   )
 }

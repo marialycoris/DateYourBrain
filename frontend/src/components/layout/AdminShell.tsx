@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { BarChart3, BookOpen, Flag, LogOut, Menu, MonitorSmartphone, Route, X } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { ConfirmModal } from '../ui/ConfirmModal'
 import { LogoMark } from '../Logo'
 
 const links = [
@@ -15,10 +16,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const { logout } = useAuth()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [logoutOpen, setLogoutOpen] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   const handleLogout = async () => {
-    await logout()
-    navigate('/login')
+    setLoggingOut(true)
+    try {
+      await logout()
+      navigate('/login')
+    } finally {
+      setLoggingOut(false)
+      setLogoutOpen(false)
+    }
   }
 
   const closeMenu = () => setMenuOpen(false)
@@ -63,7 +72,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
         View learner app
       </button>
       <button
-        onClick={handleLogout}
+        onClick={() => {
+          closeMenu()
+          setLogoutOpen(true)
+        }}
         className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-ink/60 hover:bg-amber-100 hover:text-signal"
       >
         <LogOut size={17} />
@@ -114,6 +126,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <main className="min-w-0 flex-1 overflow-y-auto px-4 py-6 pt-16 sm:px-6 md:px-8 md:pt-8 md:pb-10 lg:px-10">
         {children}
       </main>
+
+      <ConfirmModal
+        open={logoutOpen}
+        onClose={() => {
+          if (!loggingOut) setLogoutOpen(false)
+        }}
+        onConfirm={handleLogout}
+        title="Log out?"
+        message="You'll need to sign in again to access the admin panel."
+        confirmLabel="Log out"
+        variant="danger"
+        busy={loggingOut}
+      />
     </div>
   )
 }

@@ -22,23 +22,27 @@ function PathCard({ path, entries }: { path: LearningPath; entries: TrackerEntry
 
   return (
     <section className="rounded-card border border-amber-300 bg-amber-50/80 p-4 shadow-card">
-      <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-amber-700">
-          <Route size={13} /> Learning path
-        </span>
-        <span className="shrink-0 text-xs text-ink/50">
-          {done} of {total} completed
-        </span>
-      </div>
+      <Link to={`/paths/${path.id}`} className="block group">
+        <div className="flex items-center justify-between gap-3">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-amber-700">
+            <Route size={13} /> Learning path
+          </span>
+          <span className="shrink-0 text-xs text-ink/50">
+            {done} of {total} completed
+          </span>
+        </div>
 
-      <h2 className="mt-1 font-display text-lg font-semibold leading-snug text-ink">{path.title}</h2>
-      {path.description && (
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink/55">{path.description}</p>
-      )}
+        <h2 className="mt-1 font-display text-lg font-semibold leading-snug text-ink group-hover:underline">
+          {path.title}
+        </h2>
+        {path.description && (
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink/55">{path.description}</p>
+        )}
 
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-amber-200">
-        <div className="h-full rounded-full bg-amber-600 transition-all" style={{ width: `${percent}%` }} />
-      </div>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-amber-200">
+          <div className="h-full rounded-full bg-amber-600 transition-all" style={{ width: `${percent}%` }} />
+        </div>
+      </Link>
 
       {next ? (
         <div className="mt-3 flex items-center gap-3">

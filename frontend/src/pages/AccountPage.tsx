@@ -1,52 +1,60 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle2, KeyRound, LogOut } from 'lucide-react'
+import { KeyRound, LogOut } from 'lucide-react'
 import { AppShell } from '@/components/layout/AppShell'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { useToast } from '@/components/ui/Toast'
 import { useAuth } from '@/context/AuthContext'
 import { auth } from '@/lib/api'
 
 export default function AccountPage() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const toast = useToast()
   const [passwordOpen, setPasswordOpen] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState(false)
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
+  const [logoutOpen, setLogoutOpen] = useState(false)
 
   const openPassword = () => {
     setError('')
-    setSuccess(false)
     setCurrent('')
     setNext('')
     setConfirm('')
     setPasswordOpen(true)
   }
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setSuccess(false)
     if (next !== confirm) {
       setError('New passwords do not match.')
       return
     }
+    setConfirmPassword(true)
+  }
+
+  const changePassword = async () => {
     if (!user) return
     setLoading(true)
     try {
       await auth.changePassword(user.id, current, next)
-      setSuccess(true)
-      setCurrent('')
-      setNext('')
-      setConfirm('')
+      setConfirmPassword(false)
+      setPasswordOpen(false)
+      toast.success('Password updated.')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.')
+      const message = err instanceof Error ? err.message : 'Something went wrong.'
+      setError(message)
+      setConfirmPassword(false)
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -59,6 +67,7 @@ export default function AccountPage() {
       navigate('/login')
     } finally {
       setLoggingOut(false)
+      setLogoutOpen(false)
     }
   }
 
@@ -88,7 +97,7 @@ export default function AccountPage() {
           <Button
             variant="danger"
             fullWidth
-            onClick={handleLogout}
+            onClick={() => setLogoutOpen(true)}
             disabled={loggingOut}
             className="flex items-center justify-center gap-2"
           >
@@ -126,16 +135,36 @@ export default function AccountPage() {
             onChange={(e) => setConfirm(e.target.value)}
           />
           {error && <p className="text-sm font-medium text-signal">{error}</p>}
-          {success && (
-            <p className="flex items-center gap-1.5 text-sm font-medium text-amber-700">
-              <CheckCircle2 size={16} /> Password updated.
-            </p>
-          )}
           <Button type="submit" fullWidth disabled={loading}>
-            {loading ? 'Saving…' : 'Update password'}
+            {loading ? 'Saving…' : 'Continue'}
           </Button>
         </form>
       </Modal>
+
+      <ConfirmModal
+        open={confirmPassword}
+        onClose={() => {
+          if (!loading) setConfirmPassword(false)
+        }}
+        onConfirm={changePassword}
+        title="Change password?"
+        message="Your password will be updated immediately. You'll keep using the new one the next time you sign in."
+        confirmLabel="Yes, change it"
+        busy={loading}
+      />
+
+      <ConfirmModal
+        open={logoutOpen}
+        onClose={() => {
+          if (!loggingOut) setLogoutOpen(false)
+        }}
+        onConfirm={handleLogout}
+        title="Log out?"
+        message="You'll need to sign in again to access your tracker and learning paths."
+        confirmLabel="Log out"
+        variant="danger"
+        busy={loggingOut}
+      />
     </AppShell>
   )
 }
