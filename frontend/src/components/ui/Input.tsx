@@ -1,4 +1,5 @@
 import { type InputHTMLAttributes, type TextareaHTMLAttributes, type SelectHTMLAttributes, forwardRef } from 'react'
+import { ChevronDown } from 'lucide-react'
 
 interface FieldWrapProps {
   label?: string
@@ -60,9 +61,19 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, hint, className = '', children, ...rest }, ref) => (
     <FieldWrap label={label} error={error} hint={hint}>
-      <select ref={ref} className={`${baseInputClasses} ${error ? 'border-signal' : ''} ${className}`} {...rest}>
-        {children}
-      </select>
+      <div className="relative">
+        <select
+          ref={ref}
+          className={`${baseInputClasses} appearance-none pr-10 ${error ? 'border-signal' : ''} ${className}`}
+          {...rest}
+        >
+          {children}
+        </select>
+        <ChevronDown
+          size={16}
+          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink/40"
+        />
+      </div>
     </FieldWrap>
   )
 )
