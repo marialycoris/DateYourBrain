@@ -54,12 +54,12 @@ function PathCard({ path, entries }: { path: LearningPath; entries: TrackerEntry
               {statusFor(entries, next.id) && ` · ${statusFor(entries, next.id)}`}
             </p>
           </div>
-          <Link
+          {/* <Link
             to={`/courses/${next.id}`}
             className="inline-flex shrink-0 items-center gap-1 rounded-full bg-ink px-3.5 py-2 text-xs font-medium text-amber-50 transition hover:bg-ink/90"
           >
             View <ChevronRight size={14} />
-          </Link>
+          </Link> */}
         </div>
       ) : (
         <p className="mt-3 text-sm font-medium text-ink">
