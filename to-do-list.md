@@ -1,8 +1,5 @@
-UI
-- select dropdown arrow looks ugly
-
-Learning Path
-- if clicked, should've shown the list of courses for the path and their statuses
+U
+- make changing status btn obvious
 
 System
 - changing password keeps blinking as if loading, check why

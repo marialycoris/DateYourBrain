@@ -14,8 +14,9 @@ export default function AccountPage() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const toast = useToast()
-  const [passwordOpen, setPasswordOpen] = useState(false)
-  const [confirmPassword, setConfirmPassword] = useState(false)
+  // One modal, two steps. Keeping a single Modal mounted avoids the flash you
+  // get when one AnimatePresence overlay exits while another enters.
+  const [passwordStep, setPasswordStep] = useState<'closed' | 'form' | 'confirm'>('closed')
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -29,7 +30,11 @@ export default function AccountPage() {
     setCurrent('')
     setNext('')
     setConfirm('')
-    setPasswordOpen(true)
+    setPasswordStep('form')
+  }
+
+  const closePassword = () => {
+    if (!loading) setPasswordStep('closed')
   }
 
   const handleSubmit = (e: FormEvent) => {
@@ -39,21 +44,20 @@ export default function AccountPage() {
       setError('New passwords do not match.')
       return
     }
-    setConfirmPassword(true)
+    setPasswordStep('confirm')
   }
 
   const changePassword = async () => {
-    if (!user) return
+    if (!user || loading) return
     setLoading(true)
     try {
       await auth.changePassword(user.id, current, next)
-      setConfirmPassword(false)
-      setPasswordOpen(false)
+      setPasswordStep('closed')
       toast.success('Password updated.')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Something went wrong.'
       setError(message)
-      setConfirmPassword(false)
+      setPasswordStep('form')
       toast.error(message)
     } finally {
       setLoading(false)
@@ -61,14 +65,12 @@ export default function AccountPage() {
   }
 
   const handleLogout = async () => {
+    if (loggingOut) return
     setLoggingOut(true)
-    try {
-      await logout()
-      navigate('/login')
-    } finally {
-      setLoggingOut(false)
-      setLogoutOpen(false)
-    }
+    await logout()
+    // Leave `loggingOut` true — the modal unmounts with the page, so the button
+    // never flickers back to "Log out" while the route swaps.
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -107,51 +109,56 @@ export default function AccountPage() {
       </div>
 
       <Modal
-        open={passwordOpen}
-        onClose={() => setPasswordOpen(false)}
-        title="Change password"
+        open={passwordStep !== 'closed'}
+        onClose={closePassword}
+        title={passwordStep === 'confirm' ? 'Change password?' : 'Change password'}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Current password"
-            type="password"
-            required
-            value={current}
-            onChange={(e) => setCurrent(e.target.value)}
-          />
-          <Input
-            label="New password"
-            type="password"
-            required
-            hint="At least 8 characters."
-            value={next}
-            onChange={(e) => setNext(e.target.value)}
-          />
-          <Input
-            label="Confirm new password"
-            type="password"
-            required
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-          />
-          {error && <p className="text-sm font-medium text-signal">{error}</p>}
-          <Button type="submit" fullWidth disabled={loading}>
-            {loading ? 'Saving…' : 'Continue'}
-          </Button>
-        </form>
+        {passwordStep === 'confirm' ? (
+          <>
+            <p className="text-sm leading-relaxed text-ink/70">
+              Your password will be updated immediately. You'll keep using the new one the next
+              time you sign in.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <Button onClick={changePassword} disabled={loading}>
+                {loading ? 'Saving…' : 'Yes, change it'}
+              </Button>
+              <Button variant="ghost" onClick={closePassword} disabled={loading}>
+                Cancel
+              </Button>
+            </div>
+          </>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Current password"
+              type="password"
+              required
+              value={current}
+              onChange={(e) => setCurrent(e.target.value)}
+            />
+            <Input
+              label="New password"
+              type="password"
+              required
+              hint="At least 8 characters."
+              value={next}
+              onChange={(e) => setNext(e.target.value)}
+            />
+            <Input
+              label="Confirm new password"
+              type="password"
+              required
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+            />
+            {error && <p className="text-sm font-medium text-signal">{error}</p>}
+            <Button type="submit" fullWidth disabled={loading}>
+              Continue
+            </Button>
+          </form>
+        )}
       </Modal>
-
-      <ConfirmModal
-        open={confirmPassword}
-        onClose={() => {
-          if (!loading) setConfirmPassword(false)
-        }}
-        onConfirm={changePassword}
-        title="Change password?"
-        message="Your password will be updated immediately. You'll keep using the new one the next time you sign in."
-        confirmLabel="Yes, change it"
-        busy={loading}
-      />
 
       <ConfirmModal
         open={logoutOpen}
