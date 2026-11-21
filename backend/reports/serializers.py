@@ -4,7 +4,7 @@ from .models import Report
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
+    id = serializers.CharField(source='reportNUM', read_only=True)
     courseId = serializers.IntegerField(source='course_id')
     userId = serializers.IntegerField(source='user_id', read_only=True)
     issueType = serializers.CharField(source='issue_type')

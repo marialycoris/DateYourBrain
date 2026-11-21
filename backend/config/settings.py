@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'courses',
     'tracker',
     'reports',
-    'analytics',
     'paths',
 ]
 

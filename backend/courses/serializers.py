@@ -4,7 +4,9 @@ from .models import Course
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
+    id = serializers.CharField(source='courseID', read_only=True)
+    skills = serializers.SlugRelatedField(source='skill_rows', many=True, read_only=True, slug_field='skill')
+    badges = serializers.SlugRelatedField(source='badge_rows', many=True, read_only=True, slug_field='badge')
     durationHours = serializers.IntegerField(source='duration_hours')
     courseLink = serializers.URLField(source='course_link')
     verificationNotes = serializers.CharField(source='verification_notes', required=False, allow_blank=True)

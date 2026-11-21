@@ -1,5 +1,7 @@
-from django.conf import settings
 from django.db import models
+
+from accounts.models import User
+from courses.models import Course
 
 
 class Report(models.Model):
@@ -14,8 +16,9 @@ class Report(models.Model):
         REVIEWED = 'reviewed', 'Reviewed'
         RESOLVED = 'resolved', 'Resolved'
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
-    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE, related_name='reports')
+    reportNUM = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='userID', related_name='reports')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, db_column='courseID', related_name='reports')
     issue_type = models.CharField(max_length=64, choices=IssueType.choices)
     comment = models.TextField(blank=True, default='')
     status = models.CharField(max_length=16, choices=Status.choices, default=Status.OPEN)
@@ -25,4 +28,4 @@ class Report(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'{self.course_id} — {self.issue_type}'
+        return f'{self.issue_type} — {self.course.title}'

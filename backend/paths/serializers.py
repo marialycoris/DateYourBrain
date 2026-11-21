@@ -7,7 +7,7 @@ from .models import LearningPath
 
 
 class LearningPathSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
+    id = serializers.CharField(source='pathID', read_only=True)
     courseIds = serializers.PrimaryKeyRelatedField(
         queryset=Course.objects.all(), source='courses', many=True, write_only=True
     )

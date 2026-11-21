@@ -4,13 +4,10 @@ tracker/swipe activity for the learner, and a couple of issue reports.
 
 Idempotent — safe to re-run.
 """
-from datetime import timedelta
-
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from accounts.models import Role, User
-from courses.models import Course
+from courses.models import Course, CourseBadge, CourseSkill
 from paths.models import LearningPath
 from reports.models import Report
 from tracker.models import SwipeLog, TrackerEntry
@@ -172,7 +169,14 @@ class Command(BaseCommand):
         created = 0
         for data in COURSES:
             defaults = {**data, 'status': Course.Status.ACTIVE}
-            _, was_created = Course.objects.get_or_create(title=data['title'], defaults=defaults)
+            skills = defaults.pop('skills', [])
+            badges = defaults.pop('badges', [])
+            course, was_created = Course.objects.get_or_create(title=data['title'], defaults=defaults)
+            if was_created:
+                for skill in skills:
+                    CourseSkill.objects.get_or_create(course=course, skill=skill)
+                for badge in badges:
+                    CourseBadge.objects.get_or_create(course=course, badge=badge)
             created += int(was_created)
         self.stdout.write(f'Courses: {created} created, {len(COURSES) - created} already present.')
 

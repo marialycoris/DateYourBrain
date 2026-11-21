@@ -4,7 +4,7 @@ from .models import TrackerEntry
 
 
 class TrackerSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
+    id = serializers.CharField(source='trackerID', read_only=True)
     # Strings to match Course.id (serialized as CharField) — the frontend joins
     # tracker entries to courses with strict equality on these ids.
     courseId = serializers.CharField(source='course_id', read_only=True)

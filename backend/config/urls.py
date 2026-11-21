@@ -7,12 +7,14 @@ maps 1:1 to these routes.
 from django.contrib import admin
 from django.urls import include, path
 
+from reports import views as reports_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
     path('api/courses/', include('courses.urls')),
     path('api/', include('tracker.urls')),
     path('api/reports/', include('reports.urls')),
-    path('api/analytics/', include('analytics.urls')),
+    path('api/analytics/summary/', reports_views.SummaryView.as_view(), name='analytics-summary'),
     path('api/paths/', include('paths.urls')),
 ]

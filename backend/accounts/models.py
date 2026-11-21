@@ -33,6 +33,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    userID = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=16, choices=Role.choices, default=Role.USER)
     is_active = models.BooleanField(default=True)
@@ -50,3 +51,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_admin(self):
         return self.role == Role.ADMIN
+    

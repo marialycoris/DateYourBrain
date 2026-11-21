@@ -6,7 +6,7 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
+    id = serializers.CharField(source='userID', read_only=True)
     createdAt = serializers.DateTimeField(source='created_at', read_only=True)
 
     class Meta:
@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
+    id = serializers.CharField(source='userID', read_only=True)
     createdAt = serializers.DateTimeField(source='created_at', read_only=True)
     password = serializers.CharField(write_only=True, min_length=8, validators=[validate_password])
 
